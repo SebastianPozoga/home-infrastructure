@@ -1,0 +1,6 @@
+{{- define "docker/owncloud" -}}
+{{- $ctx := . -}}
+
+{{- $ctx.RenderOnce "docker/owncloud/.env" "" "" "docker/owncloud/.env" $ctx.DotData -}}
+
+{{- end -}}
