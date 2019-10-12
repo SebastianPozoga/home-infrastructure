@@ -1,3 +1,9 @@
+{{- define ".gitignore" -}}
+{{- $ctx := . -}}
+{{- $vcsData := $ctx.DotData -}}
+{{- $generated := $vcsData.VCSGeneratedFiles -}}
+{{- $ignored := $vcsData.VCSIgnoredFiles -}}
+
 ############################
 # Project files
 ############################
@@ -37,4 +43,11 @@ configuration.json
 ############################
 # Genereted files
 ############################
-docker/owncloud/.env
+{{- range $index, $row := $generated.All }}
+{{- if and (not ($ignored.ContainsPath $row.Path)) (ne $row.Path ".gitignore") (ne $row.Path "") }}
+{{$row.Path}}
+{{- end }}
+{{- end }}
+
+
+{{- end -}}
