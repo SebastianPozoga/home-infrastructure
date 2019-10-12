@@ -1,2 +1,30 @@
+############################
+# Project files
+############################
+
+# data directory is reserved for development data path
 data
+
+# contains generated credentials for owncloud docker containers
 docker/owncloud/.env
+
+# goatcli secret file contains user secret data (like credentials)
+.goat/secrets.json
+
+
+############################
+# other system and ide files
+############################
+.DS_Store
+main
+npm-debug.log
+__debug_bin
+*.test
+*~
+*.exe
+debug
+*.db
+*.db-journal
+.idea/
+*.log
+configuration.json
