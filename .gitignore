@@ -5,14 +5,11 @@
 # data directory is reserved for development data path
 data
 
-# contains generated credentials for owncloud docker containers
-#docker/owncloud/.env
-
 # goatcli secret file contains user secret data (like credentials)
 .goat/secrets.json
 
 ############################
-# GoatCLI - perivate data
+# GoatCLI - private data
 ############################
 /.goat/secrets.json
 /.goat/vcs/generated
@@ -35,6 +32,9 @@ debug
 configuration.json
 
 ############################
+# Genereted files
+############################
+docker/owncloud/.env####################
 # Genereted files
 ############################
 docker/owncloud/.env
