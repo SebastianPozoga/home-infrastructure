@@ -34,7 +34,4 @@ configuration.json
 ############################
 # Genereted files
 ############################
-docker/owncloud/.env####################
-# Genereted files
-############################
 docker/owncloud/.env
