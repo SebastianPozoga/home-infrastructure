@@ -11,3 +11,7 @@ and change or add "consoleblank" to GRUB_CMDLINE_LINUX, like
 ```
 GRUB_CMDLINE_LINUX="consoleblank=60"
 ```
+At the end rebuild grub
+```
+grub2-mkconfig -o /boot/grub2/grub.cfg
+```
