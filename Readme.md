@@ -1,9 +1,10 @@
 # Description
 
-The open-source project is a full [self-documenting infrastructure code](https://en.wikipedia.org/wiki/Self-documenting_code). It contains:
+The open-source project is an [infrastructure as code](https://en.wikipedia.org/wiki/Infrastructure_as_code) and a full [self-documenting code](https://en.wikipedia.org/wiki/Self-documenting_code). It contains:
 - docker and docker-compose definitions
 - infrastructure secrets/credentials definitions for [GoatCLI](https://github.com/goatcms/goatcli)
 - bash script to automate simple tasks
+- tooltips and snippet code
 
 Share your infrastructure too :-)
 
@@ -12,3 +13,6 @@ Share your infrastructure too :-)
 - Open-source software help companies and peoples save time.
 - **You can review** my code.
 - **You can develop** with me.
+
+# Tooltips and snippet code
+- [hardware/server machine configuration](readme/hardware.md)
