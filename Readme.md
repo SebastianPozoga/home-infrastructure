@@ -4,7 +4,7 @@ The open-source project is an [infrastructure as code](https://en.wikipedia.org/
 - docker and docker-compose definitions
 - infrastructure secrets/credentials definitions for [GoatCLI](https://github.com/goatcms/goatcli)
 - bash script to automate simple tasks
-- tooltips and sniped codes
+- tooltips and snippet codes
 
 Share your infrastructure too :-)
 
@@ -38,5 +38,5 @@ cd home-infrastructure
 goatcli build
 ```
 
-# Tooltips and sniped codes
+# Tooltips and snippet codes
 - [hardware/server machine configuration](readme/hardware.md)
