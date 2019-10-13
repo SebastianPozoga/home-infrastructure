@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
-cd ./docker/owncloud
+cd docker/owncloud
 docker-compose down
