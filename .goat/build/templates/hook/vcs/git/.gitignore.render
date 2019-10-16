@@ -1,5 +1,3 @@
-{{- define ".gitignore" -}}
-{{- $ctx := . -}}
 {{- $vcsData := $ctx.DotData -}}
 {{- $generated := $vcsData.VCSGeneratedFiles -}}
 {{- $ignored := $vcsData.VCSIgnoredFiles -}}
@@ -41,10 +39,7 @@ configuration.json
 # Genereted files
 ############################
 {{- range $index, $row := $generated.All }}
-{{- if and (not ($ignored.ContainsPath $row.Path)) (ne $row.Path ".gitignore") (ne $row.Path "") }}
+{{- if and (not ($ignored.ContainsPath $row.Path)) (ne $row.Path "/.gitignore") (ne $row.Path "") }}
 {{$row.Path}}
 {{- end }}
 {{- end }}
-
-
-{{- end -}}
