@@ -12,7 +12,7 @@
     src: frpc.ini
     dest: /etc/frp/frpc.ini
     owner: frpc
-    group: frpc
+    group: frp
     mode: '0600'
 
 - name: Start and enable frpc

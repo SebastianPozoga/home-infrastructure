@@ -7,11 +7,26 @@
   import_role:
     name: golang
 
+- name: Add frp group
+  group:
+    name: frp
+    state: present
+
+- name: Add frpc user
+  user:
+    name: frpc
+    group: frp
+
+- name: Add frps user
+  user:
+    name: frps
+    group: frp
+
 - name: Install frpc
-  shell: go get -u github.com/fatedier/frp/cmd/frpc && mv $GOPATH/bin/frpc /usr/bin/frpc
+  shell: go get -u github.com/fatedier/frp/cmd/frpc && mv $GOPATH/bin/frpc /usr/bin/frpc && chmod 0555 /usr/bin/frpc
 
 - name: Install frps
-  shell: go get -u github.com/fatedier/frp/cmd/frps && mv $GOPATH/bin/frps /usr/bin/frps
+  shell: go get -u github.com/fatedier/frp/cmd/frps && mv $GOPATH/bin/frps /usr/bin/frps && chmod 0555 /usr/bin/frpc
 
 - name: Add frpc.service
   copy:
@@ -34,26 +49,6 @@
     path: /etc/frp
     state: directory
     owner: root
-    group: root
-    mode: 0744
+    group: frp
+    mode: 0770
     recurse: yes
-
-- name: Add frpc group
-  group:
-    name: frpc
-    state: present
-
-- name: Add frpc user
-  user:
-    name: frpc
-    group: frpc
-
-- name: Add frps group
-  group:
-    name: frps
-    state: present
-
-- name: Add frps user
-  user:
-    name: frps
-    group: frps
