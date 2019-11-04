@@ -1,0 +1,5 @@
+
+{{- range $i, $key := (keys $ctx.PlainData "wordpress.") -}}
+  {{- $name := (index $ctx.PlainData (print "wordpress." $key ".name")) -}}
+  {{- $ctx.AddSecret (dict "Key" (print "wordpress." $name ".secret") "Type" "line") -}}
+{{- end -}}

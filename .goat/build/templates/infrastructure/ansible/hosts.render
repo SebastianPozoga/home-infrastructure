@@ -1,0 +1,4 @@
+[internal_master]
+internal_master_host ansible_connection=ssh ansible_user={{index $ctx.Properties.Secrets "infrastructure.internal.master.username"}} ansible_host={{index $ctx.Properties.Secrets "infrastructure.internal.master.host"}} ansible_port={{index $ctx.Properties.Secrets "infrastructure.internal.master.port"}}
+
+[internal_slaves]

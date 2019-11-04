@@ -1,0 +1,11 @@
+{
+  "os": {
+    "arch": "amd64",
+    "component": {
+      "go": {
+        "version": "1.13.3"
+      }
+    },
+    "id": "linux"
+  }
+}

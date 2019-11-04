@@ -1,0 +1,14 @@
+# reconfig remote machines
+
+## Check if required
+# ssh -p 2223 spozoga@pozoga.eu 'sed -i "s/#PubkeyAuthentication yes/PubkeyAuthentication yes/" /etc/ssh/sshd_config'
+# sudo systemctl restart sshd
+
+## It is important to set correct directory permissions
+# chmod 0700 ~/.ssh
+# chmod 0600 ~/.ssh/authorized_keys
+
+## copy id to remote machines
+# alternative: ssh-copy-id -p {{index $ctx.Properties.Secrets "infrastructure.internal.master.port"}} {{index $ctx.Properties.Secrets "infrastructure.internal.master.username"}}@{{index $ctx.Properties.Secrets "infrastructure.internal.master.host"}}
+
+cat ~/.ssh/id_rsa.pub | ssh -p {{index $ctx.Properties.Secrets "infrastructure.internal.master.port"}} {{index $ctx.Properties.Secrets "infrastructure.internal.master.username"}}@{{index $ctx.Properties.Secrets "infrastructure.internal.master.host"}} 'mkdir ~/.ssh && chmod 0700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 0600 ~/.ssh/authorized_keys'

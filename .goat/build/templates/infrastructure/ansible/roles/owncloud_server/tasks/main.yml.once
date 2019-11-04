@@ -1,0 +1,34 @@
+---
+#
+# Tasks to install owncloud server
+#
+
+- name: Require docker server role
+  import_role:
+    name: docker_server
+
+- name: Creates /tmp/owncloud_server directory
+  file:
+    path: /tmp/owncloud_server
+    state: directory
+    owner: root
+    group: root
+    mode: 0744
+    recurse: yes
+
+- name: Deploy files
+  copy:
+    src: ./
+    dest: /tmp/owncloud_server
+    owner: root
+    group: root
+
+- name: Up owncloud
+  shell: docker-compose up -d
+  args:
+    chdir: /tmp/owncloud_server
+
+- name: Clean files
+  file:
+    state: absent
+    path: /tmp/owncloud_server

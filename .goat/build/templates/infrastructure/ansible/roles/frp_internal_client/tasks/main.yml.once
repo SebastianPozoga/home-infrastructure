@@ -1,0 +1,22 @@
+---
+#
+# Tasks to install and config internal frpc
+#
+
+- name: Require frp
+  import_role:
+    name: frp
+
+- name: Copy frpc.ini
+  copy:
+    src: frpc.ini
+    dest: /etc/frp/frpc.ini
+    owner: frpc
+    group: frpc
+    mode: '0600'
+
+- name: Start and enable frpc
+  systemd:
+    state: started
+    enabled: yes
+    name: frpc

@@ -15,8 +15,8 @@ data
 ############################
 # GoatCLI - private data
 ############################
-/.goat/secrets.json
-/.goat/vcs/generated
+.goat/secrets.json
+.goat/vcs/generated
 
 ############################
 # Other system and ide files

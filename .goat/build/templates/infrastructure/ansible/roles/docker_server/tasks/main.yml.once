@@ -1,0 +1,13 @@
+---
+#
+# Tasks to install and config docker server
+#
+
+- name: Install docker
+  script: install_docker.sh
+
+- name: Start and enable docker
+  systemd:
+    state: started
+    enabled: yes
+    name: docker

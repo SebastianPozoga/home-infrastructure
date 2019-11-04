@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+
+VERSION="1.13.4"
+OS="linux"
+ARCH="amd64"
+GOFILENAME="go$VERSION.$OS-$ARCH.tar.gz"
+
+if [ -x "$(command -v go)" ]; then
+    echo "Install golang - skiped"
+else
+    echo "Install golang..."
+    # install
+    wget "https://dl.google.com/go/$GOFILENAME"
+    tar -C /usr/local -xzf $GOFILENAME
+
+    # add go bin permanently
+    echo 'export PATH=$PATH:/usr/local/go/bin' >> /etc/profile
+    export PATH=$PATH:/usr/local/go/bin
+
+    # add to environments permanently
+    mkdir -p $HOME/go
+    echo 'export GOPATH=$HOME/go' >> /etc/profile
+    export GOPATH=$HOME/go
+    echo 'export PATH=$PATH:$GOPATH/bin' >> /etc/profile
+    export PATH=$PATH:$GOPATH/bin
+fi

@@ -1,0 +1,59 @@
+---
+#
+# Tasks to install and config docker server
+#
+
+- name: Require golang role
+  import_role:
+    name: golang
+
+- name: Install frpc
+  shell: go get -u github.com/fatedier/frp/cmd/frpc && mv $GOPATH/bin/frpc /usr/bin/frpc
+
+- name: Install frps
+  shell: go get -u github.com/fatedier/frp/cmd/frps && mv $GOPATH/bin/frps /usr/bin/frps
+
+- name: Add frpc.service
+  copy:
+    src: frpc.service
+    dest: /etc/systemd/system/frpc.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Add frps.service
+  copy:
+    src: frps.service
+    dest: /etc/systemd/system/frps.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Creates /etc/frp directory
+  file:
+    path: /etc/frp
+    state: directory
+    owner: root
+    group: root
+    mode: 0744
+    recurse: yes
+
+- name: Add frpc group
+  group:
+    name: frpc
+    state: present
+
+- name: Add frpc user
+  user:
+    name: frpc
+    group: frpc
+
+- name: Add frps group
+  group:
+    name: frps
+    state: present
+
+- name: Add frps user
+  user:
+    name: frps
+    group: frps

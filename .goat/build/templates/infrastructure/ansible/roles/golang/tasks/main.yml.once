@@ -1,0 +1,12 @@
+---
+#
+# Tasks to install go
+#
+
+- name: install the latest version of git
+  package:
+    name: git
+    state: latest
+
+- name: Install go
+  script: install_go.sh

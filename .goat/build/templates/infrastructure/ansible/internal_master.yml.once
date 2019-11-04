@@ -1,0 +1,8 @@
+---
+- hosts: internal_master
+  environment:
+    PATH: "/usr/local/go/bin:{{wrap "ansible_env.PATH"}}"
+  roles:
+    - common
+    - frp_internal_client
+    - owncloud_server

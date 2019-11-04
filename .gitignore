@@ -11,8 +11,8 @@ data
 ############################
 # GoatCLI - private data
 ############################
-/.goat/secrets.json
-/.goat/vcs/generated
+.goat/secrets.json
+.goat/vcs/generated
 
 ############################
 # Other system and ide files
@@ -34,4 +34,26 @@ configuration.json
 ############################
 # Genereted files
 ############################
-/docker/owncloud/.env
+/ansible/hosts
+/ansible/internal_master.yml
+/ansible/roles/common/handlers/.gitkeep
+/ansible/roles/common/tasks/main.yml
+/ansible/roles/common/templates/.gitkeep
+/ansible/roles/docker_server/files/install_docker.sh
+/ansible/roles/docker_server/tasks/main.yml
+/ansible/roles/frp/files/frpc.service
+/ansible/roles/frp/files/frps.service
+/ansible/roles/frp/tasks/main.yml
+/ansible/roles/frp_internal_client/files/frpc.ini
+/ansible/roles/frp_internal_client/files/install.sh
+/ansible/roles/frp_internal_client/tasks/main.yml
+/ansible/roles/golang/files/install_go.sh
+/ansible/roles/golang/tasks/main.yml
+/ansible/roles/owncloud_server/files/.env
+/ansible/roles/owncloud_server/files/docker-compose.yml
+/ansible/roles/owncloud_server/tasks/main.yml
+/ansible/site.yml
+/bin/docker-down.sh
+/bin/docker-up.sh
+/bin/install.sh
+/bin/ssh-add-keys.sh

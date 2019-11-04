@@ -1,0 +1,7 @@
+#!/bin/bash
+
+bash -x
+
+ansible all -i ansible/hosts -m ping
+
+ansible-playbook -i ansible/hosts ansible/site.yml

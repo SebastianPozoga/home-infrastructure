@@ -1,0 +1,12 @@
+[common]
+server_addr = {{index $ctx.Properties.Secrets "services.frp.host"}}
+server_port = {{index $ctx.Properties.Secrets "services.frp.port"}}
+token = {{index $ctx.Properties.Secrets "services.frp.secret"}}
+
+[remotessh]
+local_port = 22
+remote_port = 2224
+
+[owncloud]
+local_port = 8081
+remote_port = 8081
