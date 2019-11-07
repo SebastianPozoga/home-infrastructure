@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+
+ssh-copy-id -p {{index $ctx.Properties.Secrets "infrastructure.internal.master.port"}} {{index $ctx.Properties.Secrets "infrastructure.internal.master.username"}}@{{index $ctx.Properties.Secrets "infrastructure.internal.master.host"}}
+ssh-copy-id -p {{index $ctx.Properties.Secrets "infrastructure.external.master.port"}} {{index $ctx.Properties.Secrets "infrastructure.external.master.username"}}@{{index $ctx.Properties.Secrets "infrastructure.external.master.host"}}

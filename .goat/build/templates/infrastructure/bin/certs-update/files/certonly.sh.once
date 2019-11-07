@@ -1,0 +1,21 @@
+{{- $localPath := (index $ctx.Properties.Secrets "paths.local.data") -}}
+{{- $locaLetsencryptPath := (print $localPath "/buildinapps/letsencrypt") -}}
+{{- $remotePath := (index $ctx.Properties.Secrets "paths.remote.data") -}}
+{{- $remoteLetsencryptPath := (print $remotePath "/buildinapps/letsencrypt") -}}
+
+#!/bin/bash
+set -e
+
+CERT_EMAIL={{index $ctx.Properties.Secrets "certs.email"}}
+SERVER="https://acme-v02.api.letsencrypt.org/directory"
+
+docker run -it --rm --name certbot \
+  -v "{{$remoteLetsencryptPath}}/etc:/etc/letsencrypt" \
+  -v "{{$remoteLetsencryptPath}}/lib:/var/lib/letsencrypt" \
+  -v "{{$remoteLetsencryptPath}}/logs:/var/logs/letsencrypt" \
+  -p 80:80 -p 433:433 \
+  certbot/certbot \
+  certonly -n --standalone --agree-tos --preferred-challenges http \
+  --email "$CERT_EMAIL" --cert-name "{{index $ctx.Properties.Secrets "infrastructure.external.master.host"}}" \
+  -d "{{index $ctx.Properties.Secrets "infrastructure.external.master.host"}}" \
+  --server "$SERVER"

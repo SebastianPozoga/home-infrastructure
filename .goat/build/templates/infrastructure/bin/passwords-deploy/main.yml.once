@@ -1,0 +1,8 @@
+{{- $localRegistryDataPath := (print (index $ctx.Properties.Secrets "paths.local.data") "/buildinapps/registry") -}}
+{{- $localAuthDataPath := (print $localRegistryDataPath "/auth") -}}
+{{- $remoteRegistryDataPath := (print (index $ctx.Properties.Secrets "paths.remote.data") "/buildinapps/registry") -}}
+{{- $remoteAuthDataPath := (print $remoteRegistryDataPath "/auth") -}}
+
+# Deploy docker registry secrets
+
+{{template "/ansible_deploy_directory.def" (dict "hosts" "internal_master" "remotePath" $remoteAuthDataPath "localPath" $localAuthDataPath "taskName" "Deploy users passwords")}}

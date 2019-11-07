@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  owncloud:
+    image: owncloud
+    restart: always
+    ports:
+      - 8081:80
+    volumes:
+     - ${DATA_PATH}/apps:/var/www/html/apps
+     - ${DATA_PATH}/config:/var/www/html/config
+     - ${DATA_PATH}/data:/var/www/html/data

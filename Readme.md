@@ -39,4 +39,5 @@ goatcli build
 ```
 
 # Tooltips and snippet codes
-- [hardware/server machine configuration](readme/hardware.md)
+- [Hardware/server machine configuration](readme/hardware.md)
+- [Add SSH public key to remote machine](readme/ssh_copy_id.md)

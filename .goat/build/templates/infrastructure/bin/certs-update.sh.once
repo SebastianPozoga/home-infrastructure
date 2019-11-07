@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+
+ansible-playbook -i ansible/hosts bin/certs-update/main.yml
+./bin/certs-deploy.sh

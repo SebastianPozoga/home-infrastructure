@@ -5,4 +5,5 @@
   roles:
     - common
     - frp_internal_client
-    - owncloud_server
+    - internal_owncloud_server
+    - docker_registry

@@ -23,10 +23,10 @@
     group: frp
 
 - name: Install frpc
-  shell: go get -u github.com/fatedier/frp/cmd/frpc && mv $GOPATH/bin/frpc /usr/bin/frpc && chmod 0555 /usr/bin/frpc
+  shell: go get -u github.com/fatedier/frp/cmd/frpc && mv ~/go/bin/frpc /usr/bin/frpc && chmod 0555 /usr/bin/frpc
 
 - name: Install frps
-  shell: go get -u github.com/fatedier/frp/cmd/frps && mv $GOPATH/bin/frps /usr/bin/frps && chmod 0555 /usr/bin/frpc
+  shell: go get -u github.com/fatedier/frp/cmd/frps && mv ~/go/bin/frps /usr/bin/frps && chmod 0555 /usr/bin/frpc
 
 - name: Add frpc.service
   copy:

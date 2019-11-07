@@ -1,0 +1,33 @@
+{{- $hosts := .hosts -}}
+{{- $remotePath := .remotePath -}}
+{{- $localPath := .localPath -}}
+{{- $taskName := .taskName -}}
+
+---
+- hosts: {{$hosts}}
+  tasks:
+    - name: {{$taskName}} - Install rsync as dependency
+      package:
+        name: rsync
+        state: latest
+
+    - name: {{$taskName}} - Create remote directory ({{$remotePath}})
+      file:
+        path: {{$remotePath}}
+        state: directory
+        mode: '0755'
+        recurse: yes
+
+    - name: {{$taskName}} - Create local directory ({{$localPath}})
+      local_action:
+        module: file
+        path: {{$localPath}}
+        state: directory
+
+    - name: {{$taskName}} - Push/upload data
+      synchronize:
+        mode: push
+        recursive: yes
+        src: {{$localPath}}
+        dest: {{$remotePath}}
+        copy_links: yes

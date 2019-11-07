@@ -1,0 +1,13 @@
+[{
+  "prompt":"Insert remote (internal and external) data director",
+  "key":"paths.remote.data",
+  "type":"line",
+  "min":0,
+  "max":1024
+}, {
+  "prompt":"Insert local data director (on your local machine)",
+  "key":"paths.local.data",
+  "type":"line",
+  "min":0,
+  "max":1024
+}]

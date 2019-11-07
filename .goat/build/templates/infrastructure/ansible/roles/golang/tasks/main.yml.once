@@ -3,6 +3,11 @@
 # Tasks to install go
 #
 
+- name: install wget as required dependency
+  package:
+    name: wget
+    state: latest
+
 - name: install the latest version of git
   package:
     name: git

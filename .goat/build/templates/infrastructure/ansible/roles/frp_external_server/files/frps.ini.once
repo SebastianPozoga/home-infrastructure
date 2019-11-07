@@ -1,0 +1,3 @@
+[common]
+bind_port = {{index $ctx.Properties.Secrets "services.frp.port"}}
+token = {{index $ctx.Properties.Secrets "services.frp.secret"}}

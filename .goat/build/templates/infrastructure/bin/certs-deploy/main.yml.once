@@ -1,0 +1,7 @@
+{{- $localPath := (index $ctx.Properties.Secrets "paths.local.data") -}}
+{{- $localLetsencryptPath := (print $localPath "/buildinapps/letsencrypt") -}}
+{{- $localCertsPath := (print $localLetsencryptPath "/etc/live/.") -}}
+{{- $remotePath := (index $ctx.Properties.Secrets "paths.remote.data") -}}
+{{- $remoteCertsPath := (print $remotePath "/certs/.") -}}
+
+{{template "/ansible_deploy_directory.def" (dict "hosts" "all" "remotePath" $remoteCertsPath "localPath" $localCertsPath "taskName" "Certificates deploy")}}

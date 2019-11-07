@@ -1,10 +1,4 @@
 [{
-  "prompt":"(FRP) Insert frp host",
-  "key":"services.frp.host",
-  "type":"line",
-  "min":0,
-  "max":1024
-}, {
   "prompt":"(FRP) Insert frp port",
   "key":"services.frp.port",
   "type":"line",

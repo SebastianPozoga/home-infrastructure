@@ -1,0 +1,36 @@
+{{- $tmpPath := "/tmp/buildin_docker_registry" -}}
+
+---
+#
+# Tasks to install owncloud server
+#
+
+- name: Require docker server role
+  import_role:
+    name: docker_server
+
+- name: Creates {{$tmpPath}} directory
+  file:
+    path: {{$tmpPath}}
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+    recurse: yes
+
+- name: Deploy files
+  copy:
+    src: ./
+    dest: {{$tmpPath}}
+    owner: root
+    group: root
+
+- name: Up docker registry
+  shell: docker-compose up -d
+  args:
+    chdir: {{$tmpPath}}
+
+- name: Clean files
+  file:
+    state: absent
+    path: {{$tmpPath}}

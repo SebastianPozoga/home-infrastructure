@@ -1,3 +1,4 @@
 [{
   "template":"infrastructure",
+  "afterBuild": "bash ./bin/afterBuild/main.sh"
 }]

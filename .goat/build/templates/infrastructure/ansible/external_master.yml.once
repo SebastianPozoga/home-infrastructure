@@ -1,0 +1,7 @@
+---
+- hosts: external_master
+  environment:
+    PATH: "/usr/local/go/bin:{{wrap "ansible_env.PATH"}}"
+  roles:
+    - common
+    - frp_external_server

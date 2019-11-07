@@ -1,3 +1,5 @@
+{{- $tmpPath := "/tmp/buildin_owncloud_server" -}}
+
 ---
 #
 # Tasks to install owncloud server
@@ -7,9 +9,9 @@
   import_role:
     name: docker_server
 
-- name: Creates /tmp/owncloud_server directory
+- name: Creates {{$tmpPath}} directory
   file:
-    path: /tmp/owncloud_server
+    path: {{$tmpPath}}
     state: directory
     owner: root
     group: root
@@ -19,16 +21,16 @@
 - name: Deploy files
   copy:
     src: ./
-    dest: /tmp/owncloud_server
+    dest: {{$tmpPath}}
     owner: root
     group: root
 
 - name: Up owncloud
   shell: docker-compose up -d
   args:
-    chdir: /tmp/owncloud_server
+    chdir: {{$tmpPath}}
 
 - name: Clean files
   file:
     state: absent
-    path: /tmp/owncloud_server
+    path: {{$tmpPath}}

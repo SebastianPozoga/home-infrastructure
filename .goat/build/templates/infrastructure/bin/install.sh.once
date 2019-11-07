@@ -1,7 +1,7 @@
 #!/bin/bash
-
-bash -x
+set -e
 
 ansible all -i ansible/hosts -m ping
 
+./bin/certs-update.sh
 ansible-playbook -i ansible/hosts ansible/site.yml

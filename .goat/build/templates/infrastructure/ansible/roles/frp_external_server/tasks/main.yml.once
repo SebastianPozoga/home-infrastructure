@@ -1,0 +1,18 @@
+---
+- name: Require frp
+  import_role:
+    name: frp
+
+- name: Copy frps.ini
+  copy:
+    src: frps.ini
+    dest: /etc/frp/frps.ini
+    owner: frps
+    group: frp
+    mode: '0600'
+
+- name: Start and enable frps
+  systemd:
+    state: started
+    enabled: yes
+    name: frps
