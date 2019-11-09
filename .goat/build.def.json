@@ -1,4 +1,4 @@
 [{
   "template":"infrastructure",
-  "afterBuild": "bash ./bin/afterBuild/main.sh"
+  "afterBuild": "bash ./.goat/common/afterBuild/main.sh"
 }]
