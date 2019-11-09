@@ -48,6 +48,7 @@ configuration.json
 /ansible/roles/frp/files/frpc.service
 /ansible/roles/frp/files/frps.service
 /ansible/roles/frp/tasks/main.yml
+/ansible/roles/frp_external_server/files/firewall.sh
 /ansible/roles/frp_external_server/files/frps.ini
 /ansible/roles/frp_external_server/tasks/main.yml
 /ansible/roles/frp_internal_client/files/frpc.ini

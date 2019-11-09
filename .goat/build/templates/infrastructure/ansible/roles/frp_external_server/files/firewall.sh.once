@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+firewall-cmd --zone=public --add-port={{index $ctx.Properties.Secrets "services.frp.port"}}/tcp --permanent
+firewall-cmd --zone=public --add-port=2224/tcp --permanent
+firewall-cmd --zone=public --add-port={{index $ctx.Properties.Secrets "docker.registry.port"}}/tcp --permanent
+firewall-cmd --zone=public --add-port=8081/tcp --permanent
+
+firewall-cmd --reload

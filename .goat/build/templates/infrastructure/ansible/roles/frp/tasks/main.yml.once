@@ -52,3 +52,6 @@
     group: frp
     mode: 0770
     recurse: yes
+
+- name: Systemctl daemon-reload
+  command: "systemctl daemon-reload"

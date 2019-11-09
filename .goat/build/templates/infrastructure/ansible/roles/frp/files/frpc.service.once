@@ -7,7 +7,7 @@ Type=simple
 User=frpc
 Restart=on-failure
 RestartSec=5s
-ExecStart=bash -c "/usr/bin/frpc -c /etc/frp/frpc.ini"
+ExecStart=/bin/bash -c "/usr/bin/frpc -c /etc/frp/frpc.ini"
 
 [Install]
 WantedBy=multi-user.target
