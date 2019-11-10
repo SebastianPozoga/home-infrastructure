@@ -45,6 +45,9 @@ configuration.json
 /ansible/roles/docker_registry/tasks/main.yml
 /ansible/roles/docker_server/files/install_docker.sh
 /ansible/roles/docker_server/tasks/main.yml
+/ansible/roles/external_proxy/files/.env
+/ansible/roles/external_proxy/files/docker-compose.yml
+/ansible/roles/external_proxy/tasks/main.yml
 /ansible/roles/frp/files/frpc.service
 /ansible/roles/frp/files/frps.service
 /ansible/roles/frp/tasks/main.yml

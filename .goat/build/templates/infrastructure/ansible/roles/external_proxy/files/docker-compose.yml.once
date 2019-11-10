@@ -1,0 +1,20 @@
+{{- $externalHost := (index $ctx.Properties.Secrets "infrastructure.external.master.host") -}}
+{{- $owncloudPort := (index $ctx.Properties.Secrets "buildin.owncloud.port") -}}
+
+version: '3.7'
+
+services:
+  proxy:
+    image: firmom/docker-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "${CERTS_PATH}:/certs"
+    environment:
+        - "PROXY_BuildinOwnCloud_FROM=owncloud.{{$externalHost}}"
+        - "PROXY_BuildinOwnCloud_CERT=owncloud.{{$externalHost}}"
+        - "PROXY_BuildinOwnCloud_TO={{$externalHost}}"
+        - "PROXY_BuildinOwnCloud_PORT={{$owncloudPort}}"
+        - "PROXY_BuildinOwnCloud_PROTOCOL=HTTP"

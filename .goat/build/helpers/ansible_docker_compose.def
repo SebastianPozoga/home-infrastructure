@@ -1,0 +1,37 @@
+{{- $taskName := .taskName -}}
+{{- $tmpName := .tmpName -}}
+{{- $image := .image -}}
+{{- $tmpPath := (print "/tmp/" $tmpName) -}}
+
+- name: {{$taskName}} - Require docker server role
+  import_role:
+    name: docker_server
+
+- name: {{$taskName}} - Pull {{$image}} docker image
+  shell: docker pull {{$image}}
+
+- name: {{$taskName}} - Creates {{$tmpPath}} directory
+  file:
+    path: {{$tmpPath}}
+    state: directory
+    owner: root
+    group: root
+    mode: 0744
+    recurse: yes
+
+- name: {{$taskName}} - Deploy files
+  copy:
+    src: ./
+    dest: {{$tmpPath}}
+    owner: root
+    group: root
+
+- name: {{$taskName}} - Up owncloud
+  shell: docker-compose up -d
+  args:
+    chdir: {{$tmpPath}}
+
+- name: {{$taskName}} - Clean files
+  file:
+    state: absent
+    path: {{$tmpPath}}

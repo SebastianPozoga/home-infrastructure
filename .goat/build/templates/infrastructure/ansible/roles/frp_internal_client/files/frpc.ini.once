@@ -8,8 +8,8 @@ local_port = 22
 remote_port = 2224
 
 [docker_registry]
-local_port = {{index $ctx.Properties.Secrets "docker.registry.port"}}
-remote_port = {{index $ctx.Properties.Secrets "docker.registry.port"}}
+local_port = {{index $ctx.Properties.Secrets "buildin.registry.port"}}
+remote_port = {{index $ctx.Properties.Secrets "buildin.registry.port"}}
 
 [owncloud]
 local_port = 8081

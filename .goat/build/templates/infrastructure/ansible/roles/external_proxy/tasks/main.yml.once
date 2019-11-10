@@ -1,0 +1,5 @@
+---
+#
+# Tasks to install proxy server
+#
+{{template "/ansible_docker_compose.def" (dict "taskName" "Owncloud deploy" "tmpName" "buildin_proxy" "image" "firmom/docker-proxy")}}

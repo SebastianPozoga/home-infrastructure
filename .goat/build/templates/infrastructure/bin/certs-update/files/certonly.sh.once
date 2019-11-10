@@ -2,12 +2,19 @@
 {{- $locaLetsencryptPath := (print $localPath "/buildinapps/letsencrypt") -}}
 {{- $remotePath := (index $ctx.Properties.Secrets "paths.remote.data") -}}
 {{- $remoteLetsencryptPath := (print $remotePath "/buildinapps/letsencrypt") -}}
+{{- $externalMaster := (index $ctx.Properties.Secrets "infrastructure.external.master.host") -}}
 
 #!/bin/bash
 set -e
 
 CERT_EMAIL={{index $ctx.Properties.Secrets "certs.email"}}
 SERVER="https://acme-v02.api.letsencrypt.org/directory"
+HTTP_CONTAINER=$(docker ps -a -q --filter expose=80 --filter status=running)
+
+# Stop http container (if required)
+if [[ ! -z "$HTTP_CONTAINER" ]]; then
+  docker stop $HTTP_CONTAINER
+fi
 
 docker run -it --rm --name certbot \
   -v "{{$remoteLetsencryptPath}}/etc:/etc/letsencrypt" \
@@ -16,6 +23,22 @@ docker run -it --rm --name certbot \
   -p 80:80 -p 433:433 \
   certbot/certbot \
   certonly -n --standalone --agree-tos --preferred-challenges http \
-  --email "$CERT_EMAIL" --cert-name "{{index $ctx.Properties.Secrets "infrastructure.external.master.host"}}" \
-  -d "{{index $ctx.Properties.Secrets "infrastructure.external.master.host"}}" \
+  --email "$CERT_EMAIL" --cert-name "" \
+  -d "{{$externalMaster}}" \
   --server "$SERVER"
+
+  docker run -it --rm --name certbot \
+    -v "{{$remoteLetsencryptPath}}/etc:/etc/letsencrypt" \
+    -v "{{$remoteLetsencryptPath}}/lib:/var/lib/letsencrypt" \
+    -v "{{$remoteLetsencryptPath}}/logs:/var/logs/letsencrypt" \
+    -p 80:80 -p 433:433 \
+    certbot/certbot \
+    certonly -n --standalone --agree-tos --preferred-challenges http \
+    --email "$CERT_EMAIL" --cert-name "owncloud.{{$externalMaster}}" \
+    -d "owncloud.{{$externalMaster}}" \
+    --server "$SERVER"
+
+# Run http container (if required)
+if [[ ! -z "$HTTP_CONTAINER" ]]; then
+  docker stop $HTTP_CONTAINER
+fi

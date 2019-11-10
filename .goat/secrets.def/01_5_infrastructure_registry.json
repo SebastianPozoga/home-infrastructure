@@ -1,7 +1,0 @@
-[{
-  "prompt":"Insert port for docker registry",
-  "key":"docker.registry.port",
-  "type":"line",
-  "min":0,
-  "max":1024
-}]

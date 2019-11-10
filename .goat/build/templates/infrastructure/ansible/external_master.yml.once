@@ -5,3 +5,4 @@
   roles:
     - common
     - frp_external_server
+    - external_proxy
