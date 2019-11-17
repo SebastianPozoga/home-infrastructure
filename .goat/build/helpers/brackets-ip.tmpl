@@ -1,0 +1,14 @@
+{{- define "brackets-ip" -}}
+{{- $ctx := . -}}
+
+{{- $arr := (split $ctx "+") -}}
+{{- $ipv4 := (index $arr 0) -}}
+{{- $ipv6 := (index $arr 1) -}}
+
+{{- if ne $ipv6 "" -}}
+  \[{{- $ipv6 -}}\]
+{{- else -}}
+  {{- $ipv4 -}}
+{{- end -}}
+
+{{- end -}}

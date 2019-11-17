@@ -1,4 +1,4 @@
-{{- define "ipsv4" -}}
+{{- define "ipsv6" -}}
 {{- $ctx := . -}}
 
 {{- $rows := (unique (split $ctx.data " ")) -}}
@@ -8,7 +8,7 @@
   {{- if ne $i 0 -}}
     {{$ctx.sep}}
   {{- end -}}
-  {{- index $arr 0 -}}
+  {{- index $arr 1 -}}
 {{- end -}}
 
 {{- end -}}

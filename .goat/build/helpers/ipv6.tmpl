@@ -1,7 +1,7 @@
-{{- define "ipv4" -}}
+{{- define "ipv6" -}}
 {{- $ctx := . -}}
 
 {{- $arr := (split $ctx "+") -}}
-{{- index $arr 0 -}}
+{{- index $arr 1 -}}
 
 {{- end -}}
