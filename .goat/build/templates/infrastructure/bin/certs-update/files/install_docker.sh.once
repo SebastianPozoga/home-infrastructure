@@ -1,1 +1,1 @@
-{{template "/install_docker.def" $ctx}}
+{{template "/docker/install.def" $ctx}}

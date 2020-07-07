@@ -1,6 +1,6 @@
 {{- $vcsData := $ctx.DotData -}}
 {{- $generated := $vcsData.VCSGeneratedFiles -}}
-{{- $ignored := $vcsData.VCSIgnoredFiles -}}
+{{- $persisted := $vcsData.VCSPersistedFiles -}}
 
 ############################
 # Project files
@@ -8,6 +8,7 @@
 
 # data directory is reserved for development data path
 data
+/tmp
 
 # goatcli secret file contains user secret data (like credentials)
 .goat/secrets.json
@@ -17,6 +18,7 @@ data
 ############################
 .goat/secrets.json
 .goat/vcs/generated
+.goat/tmp
 
 ############################
 # Other system and ide files
@@ -39,7 +41,7 @@ configuration.json
 # Genereted files
 ############################
 {{- range $index, $row := $generated.All }}
-{{- if and (not ($ignored.ContainsPath $row.Path)) (ne $row.Path "/.gitignore") (ne $row.Path "") }}
+{{- if and (not ($persisted.ContainsPath $row.Path)) (ne $row.Path ".gitignore") (ne $row.Path "") }}
 {{$row.Path}}
 {{- end }}
 {{- end }}

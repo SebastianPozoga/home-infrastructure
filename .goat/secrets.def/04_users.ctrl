@@ -1,0 +1,7 @@
+{{- $data := $ctx.Data.Tree -}}
+
+{{- range $index, $user := $data.user.__NODES }}
+  {{- $ctx.AddSecret (dict "Key" (print "user." $index ".password") "Type" "line" "Prompt" (print "Insert password for " $user.name)) -}}
+  {{- $ctx.AddSecret (dict "Key" (print "user." $index ".email") "Type" "line" "Prompt" (print "Insert email for " $user.name)) -}}
+{{- end }}
+

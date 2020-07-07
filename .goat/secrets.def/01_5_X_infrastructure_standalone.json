@@ -1,0 +1,16 @@
+[
+  {
+    "prompt": "Insert port for owncloud",
+    "key": "standalone.owncloud.port",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  },
+  {
+    "prompt": "Insert remote internal ssh port",
+    "key": "standalone.internalssh.port",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  }
+]

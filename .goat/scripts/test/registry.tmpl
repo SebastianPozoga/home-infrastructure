@@ -1,0 +1,28 @@
+{{- define "appregistry"}}
+{{- $ctx := . -}}
+
+{{- $secrets := $ctx.Properties.Secrets.Tree -}}
+{{- $data := $ctx.Data.Tree -}}
+
+{{- $internalSSHUsername := $secrets.infrastructure.internal.master.username }}
+{{- $internalSSHHost := $secrets.infrastructure.internal.master.host }}
+{{- $internalSSHPort := $secrets.infrastructure.internal.master.port }}
+{{- $internalDataPath := $secrets.infrastructure.internal.data.path }}
+
+{{- range $index, $app := $data.appregistry.__NODES }}
+{{- $logName := (print "appregistry." $index) }}
+{{- template "valid/exposedApp" (dict "name" $logName "row" $app) }}
+
+{{- range $index, $user := $data.user.__NODES }}
+
+pip:run --name=registry{{$index}}{{$user.name}} --description=<<DESC
+Test login to {{$index}} docker registry for {{$user.name}}
+DESC --sandbox=docker:docker --body=<<APPEOF
+docker login --username {{$user.name}} --password {{sh_secret (print $user.__PATH ".password")}} {{$app.host}}
+APPEOF
+
+{{- end}}
+
+
+{{- end}}
+{{- end}}

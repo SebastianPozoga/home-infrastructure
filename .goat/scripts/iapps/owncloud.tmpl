@@ -1,0 +1,100 @@
+{{- define "appowncloud"}}
+{{- $ctx := . -}}
+
+{{- $secrets := $ctx.Properties.Secrets.Tree -}}
+{{- $data := $ctx.Data.Tree -}}
+
+{{- $internalSSHUsername := $secrets.infrastructure.internal.master.username }}
+{{- $internalSSHHost := $secrets.infrastructure.internal.master.host }}
+{{- $internalSSHPort := $secrets.infrastructure.internal.master.port }}
+{{- $internalDataPath := $secrets.infrastructure.internal.data.path }}
+
+
+{{/* Install owncloud apps */}}
+{{- range $index, $app := $data.appowncloud.__NODES }}
+{{- $logName := (print "appowncloud." $index) }}
+{{- template "valid/exposedApp" (dict "name" $logName "row" $app) }}
+
+{{- $appSecrets := (index $secrets.appowncloud $index) }}
+{{- template "valid/rootAuthApp" (dict "name" $logName "row" $appSecrets) }}
+
+{{- $appDataPath := (print $internalDataPath "/app/owncloud/" $index "/" ) }}
+
+pip:run --name=owncloud{{$index}} --description=<<DESC
+Install owncloud {{$index}} application (on internal host)
+DESC --sandbox=sshb:{{$internalSSHUsername}}@{{$internalSSHHost}}:{{$internalSSHPort}} --body=<<APPEOF
+
+OWNCLOUD_VERSION=10.5
+OWNCLOUD_DOMAIN={{$app.host}}
+HTTP_PORT={{$app.port}}
+
+docker-compose -f /dev/stdin -p "owncloud-{{$index}}" up -d < <(cat <<COMPOSEEOF
+version: '2.1'
+
+services:
+  owncloud:
+    image: owncloud/server:${OWNCLOUD_VERSION}
+    restart: always
+    ports:
+      - ${HTTP_PORT}:8080
+    depends_on:
+      - db
+      - redis
+    environment:
+      - OWNCLOUD_DOMAIN=${OWNCLOUD_DOMAIN}
+      - OWNCLOUD_DB_TYPE=mysql
+      - OWNCLOUD_DB_NAME=owncloud
+      - OWNCLOUD_DB_USERNAME=owncloud
+      - OWNCLOUD_DB_PASSWORD=owncloud
+      - OWNCLOUD_DB_HOST=db
+      - OWNCLOUD_ADMIN_USERNAME=${SECRET_APPOWNCLOUD_MAIN_USERNAME}
+      - OWNCLOUD_ADMIN_PASSWORD=${SECRET_APPOWNCLOUD_MAIN_PASSWORD}
+      - OWNCLOUD_MYSQL_UTF8MB4=true
+      - OWNCLOUD_REDIS_ENABLED=true
+      - OWNCLOUD_REDIS_HOST=redis
+    healthcheck:
+      test: ["CMD", "/usr/bin/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - {{$appDataPath}}files:/mnt/data
+
+  db:
+    image: webhippie/mariadb:latest
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=owncloud
+      - MARIADB_USERNAME=owncloud
+      - MARIADB_PASSWORD=owncloud
+      - MARIADB_DATABASE=owncloud
+      - MARIADB_MAX_ALLOWED_PACKET=128M
+      - MARIADB_INNODB_LOG_FILE_SIZE=64M
+    healthcheck:
+      test: ["CMD", "/usr/bin/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - {{$appDataPath}}mysql:/var/lib/mysql
+      - {{$appDataPath}}backup:/var/lib/backup
+
+  redis:
+    image: webhippie/redis:latest
+    restart: always
+    environment:
+      - REDIS_DATABASES=1
+    healthcheck:
+      test: ["CMD", "/usr/bin/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - {{$appDataPath}}redis:/var/lib/redis
+COMPOSEEOF
+)
+
+APPEOF
+
+{{- end}}
+{{- end}}

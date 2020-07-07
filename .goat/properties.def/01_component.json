@@ -1,0 +1,9 @@
+[
+  {
+    "prompt": "Docker-compose version (like '1.26.0')",
+    "key": "dockercompose.version",
+    "type": "line",
+    "min": 1,
+    "max": 50
+  }
+]

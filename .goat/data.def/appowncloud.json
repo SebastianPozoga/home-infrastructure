@@ -1,0 +1,21 @@
+[
+  {
+    "type": "appowncloud",
+    "properties": [
+      {
+        "prompt": "Insert application host",
+        "key": "host",
+        "type": "line",
+        "min": 1,
+        "max": 1024
+      },
+      {
+        "prompt": "Insert port",
+        "key": "port",
+        "type": "line",
+        "min": 1,
+        "max": 1024
+      }
+    ]
+  }
+]

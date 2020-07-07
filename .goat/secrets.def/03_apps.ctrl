@@ -1,5 +1,14 @@
 
-{{- range $i, $key := (keys $ctx.PlainData "wordpress.") -}}
-  {{- $name := (index $ctx.PlainData (print "wordpress." $key ".name")) -}}
+{{- range $index, $row := $ctx.Data.Tree.appowncloud -}}
+{{- if not (hasPrefix $index "__")}}
+  {{- $name := (index $ctx.Data.Plain (print "appowncloud." $index ".name")) -}}
+  {{- $ctx.AddSecret (dict "Key" (print "appowncloud." $index ".admin.username") "Type" "line") -}}
+  {{- $ctx.AddSecret (dict "Key" (print "appowncloud." $index ".admin.password") "Type" "line") -}}
+{{- end -}}
+{{- end -}}
+
+
+{{- range $i, $key := (keys $ctx.Data.Plain "wordpress.") -}}
+  {{- $name := (index $ctx.Data.Plain (print "wordpress." $key ".name")) -}}
   {{- $ctx.AddSecret (dict "Key" (print "wordpress." $name ".secret") "Type" "line") -}}
 {{- end -}}

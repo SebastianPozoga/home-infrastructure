@@ -2,4 +2,4 @@
 #
 # Tasks to install docker_registry server
 #
-{{template "/ansible_docker_compose.def" (dict "taskName" "Owncloud deploy" "tmpName" "buildin_docker_registry" "image" "registry:2")}}
+{{template "/ansible/docker_compose.def" (dict "taskName" "Docker registry deploy" "tmpName" "standalone_docker_registry" "image" "registry:2")}}

@@ -1,7 +1,7 @@
 {{- $localPath := (index $ctx.Properties.Secrets "paths.local.data") -}}
-{{- $locaLetsencryptPath := (print $localPath "/buildinapps/letsencrypt") -}}
+{{- $locaLetsencryptPath := (print $localPath "/standaloneapps/letsencrypt") -}}
 {{- $remotePath := (index $ctx.Properties.Secrets "paths.remote.data") -}}
-{{- $remoteLetsencryptPath := (print $remotePath "/buildinapps/letsencrypt") -}}
+{{- $remoteLetsencryptPath := (print $remotePath "/standaloneapps/letsencrypt") -}}
 
 ---
 - hosts: external_master

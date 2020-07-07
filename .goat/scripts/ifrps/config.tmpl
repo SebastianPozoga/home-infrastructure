@@ -1,0 +1,9 @@
+{{- define "config" -}}
+{{- $ctx := . -}}
+
+[common]
+bind_port = ${SECRET_INFRASTRUCTURE_PROXY_FRP_PORT}
+token = ${SECRET_INFRASTRUCTURE_PROXY_FRP_SECRET}
+
+
+{{- end -}}

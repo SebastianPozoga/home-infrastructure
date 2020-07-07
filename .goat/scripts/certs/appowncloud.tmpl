@@ -1,0 +1,39 @@
+{{- define "appowncloud" -}}
+{{- $ctx := . -}}
+
+{{- $secrets := $ctx.Properties.Secrets.Tree -}}
+{{- $data := $ctx.Data.Tree -}}
+
+{{- $externalSSHUsername := $secrets.infrastructure.external.master.username }}
+{{- $externalSSHHost := $secrets.infrastructure.external.master.host }}
+{{- $externalSSHPort := $secrets.infrastructure.external.master.port }}
+
+{{- $internalSSHUsername := $secrets.infrastructure.internal.master.username }}
+{{- $internalSSHHost := $secrets.infrastructure.internal.master.host }}
+{{- $internalSSHPort := $secrets.infrastructure.internal.master.port }}
+
+{{- $frpPort := $secrets.infrastructure.proxy.frp.port }}
+{{- $frpSecret := $secrets.infrastructure.proxy.frp.secret }}
+
+CERT_SERVER="https://acme-v02.api.letsencrypt.org/directory"
+
+{{- range $index, $app := $data.appowncloud.__NODES }}
+{{- template "valid/exposedApp" (dict "name" $index "row" $app  ) }}
+
+certbot certonly -n --standalone --agree-tos --preferred-challenges http \
+  --email "${SECRET_CERTS_EMAIL}" --cert-name "{{$app.host}}" \
+  -d "{{$app.host}}" \
+  --server "${CERT_SERVER}"
+
+if [ ! -d "/etc/letsencrypt/live/{{$app.host}}" ]; then
+  >&2 echo "expected /etc/letsencrypt/live/{{$app.host}} - something went wrong"
+  exit 123
+fi
+
+cd /etc/letsencrypt/live/{{$app.host}}
+cp privkey.pem domain.key
+cat cert.pem chain.pem > domain.crt
+
+{{- end}}
+
+{{- end -}}

@@ -1,19 +1,30 @@
-[{
-  "prompt":"(infrastructure) Insert external master host",
-  "key":"infrastructure.external.master.host",
-  "type":"line",
-  "min":0,
-  "max":1024
-}, {
-  "prompt":"(infrastructure) Insert external master port",
-  "key":"infrastructure.external.master.port",
-  "type":"line",
-  "min":0,
-  "max":1024
-}, {
-  "prompt":"(infrastructure) Insert external master username",
-  "key":"infrastructure.external.master.username",
-  "type":"line",
-  "min":0,
-  "max":1024
-}]
+[
+  {
+    "prompt": "(infrastructure) Insert external master host",
+    "key": "infrastructure.external.master.host",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  },
+  {
+    "prompt": "(infrastructure) Insert external master port",
+    "key": "infrastructure.external.master.port",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  },
+  {
+    "prompt": "(infrastructure) Insert external master username",
+    "key": "infrastructure.external.master.username",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  },
+  {
+    "prompt": "(infrastructure) Insert external data path",
+    "key": "infrastructure.external.data.path",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  }
+]

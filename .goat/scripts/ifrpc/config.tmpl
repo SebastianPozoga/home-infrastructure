@@ -1,0 +1,44 @@
+{{- define "config" -}}
+{{- $ctx := . -}}
+
+{{- $secrets := $ctx.Properties.Secrets.Tree -}}
+{{- $data := $ctx.Data.Tree -}}
+
+{{- $internalUsername := $secrets.infrastructure.internal.master.username }}
+{{- $internalHost := $secrets.infrastructure.internal.master.host }}
+{{- $internalPort := $secrets.infrastructure.internal.master.port }}
+
+{{- $externalSSHUsername := $secrets.infrastructure.external.master.username }}
+{{- $externalSSHHost := $secrets.infrastructure.external.master.host }}
+{{- $externalSSHPort := $secrets.infrastructure.external.master.port }}
+
+{{- $frpPort := $secrets.infrastructure.proxy.frp.port }}
+{{- $frpSecret := $secrets.infrastructure.proxy.frp.secret }}
+
+[common]
+server_addr = {{$externalSSHHost}}
+server_port = ${SECRET_INFRASTRUCTURE_PROXY_FRP_PORT}
+token = ${SECRET_INFRASTRUCTURE_PROXY_FRP_SECRET}
+
+[remotessh]
+local_port = 22
+remote_port = 2224
+
+{{- range $index, $app := $data.appowncloud.__NODES }}
+{{- template "valid/exposedApp" (dict "name" $index "row" $app  ) }}
+
+[appowncloud_{{$index}}]
+local_port = {{$app.port}}
+remote_port = {{$app.port}}
+{{- end}}
+
+{{- range $index, $app := $data.appregistry.__NODES }}
+{{- template "valid/exposedApp" (dict "name" $index "row" $app  ) }}
+
+[appregistry{{$index}}]
+local_port = {{$app.port}}
+remote_port = {{$app.port}}
+{{- end}}
+
+
+{{- end -}}

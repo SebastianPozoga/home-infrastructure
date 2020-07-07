@@ -4,6 +4,7 @@
 
 # data directory is reserved for development data path
 data
+/tmp
 
 # goatcli secret file contains user secret data (like credentials)
 .goat/secrets.json
@@ -13,6 +14,7 @@ data
 ############################
 .goat/secrets.json
 .goat/vcs/generated
+.goat/tmp
 
 ############################
 # Other system and ide files
@@ -35,7 +37,6 @@ configuration.json
 # Genereted files
 ############################
 /ansible/external_master.yml
-/ansible/hosts
 /ansible/internal_master.yml
 /ansible/roles/common/handlers/.gitkeep
 /ansible/roles/common/tasks/main.yml
@@ -62,7 +63,6 @@ configuration.json
 /ansible/roles/internal_owncloud_server/files/docker-compose.yml
 /ansible/roles/internal_owncloud_server/tasks/main.yml
 /ansible/site.yml
-/bin/afterBuild/main.sh
 /bin/certs-deploy.sh
 /bin/certs-deploy/main.yml
 /bin/certs-update.sh

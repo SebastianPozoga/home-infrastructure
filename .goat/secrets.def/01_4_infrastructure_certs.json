@@ -1,7 +1,9 @@
-[{
-  "prompt":"Insert email for certificate",
-  "key":"certs.email",
-  "type":"line",
-  "min":0,
-  "max":1024
-}]
+[
+  {
+    "prompt": "Insert email for certificate",
+    "key": "certs.email",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  }
+]

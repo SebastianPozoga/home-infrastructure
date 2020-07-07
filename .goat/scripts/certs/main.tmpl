@@ -1,0 +1,79 @@
+{{- $ctx := . -}}
+
+{{- $secrets := $ctx.Properties.Secrets.Tree -}}
+{{- $data := $ctx.Data.Tree -}}
+
+{{- $externalSSHUsername := $secrets.infrastructure.external.master.username }}
+{{- $externalSSHHost := $secrets.infrastructure.external.master.host }}
+{{- $externalSSHPort := $secrets.infrastructure.external.master.port }}
+
+{{- $internalSSHUsername := $secrets.infrastructure.internal.master.username }}
+{{- $internalSSHHost := $secrets.infrastructure.internal.master.host }}
+{{- $internalSSHPort := $secrets.infrastructure.internal.master.port }}
+
+{{- $frpPort := $secrets.infrastructure.proxy.frp.port }}
+{{- $frpSecret := $secrets.infrastructure.proxy.frp.secret }}
+
+pip:run --name=install --description=<<DESC
+Install certbot
+DESC --sandbox=sshb:{{$externalSSHUsername}}@{{$externalSSHHost}}:{{$externalSSHPort}} --body=<<EOF
+apt-get install -y certbot
+EOF
+
+pip:run --name=externalupload --description=<<DESC
+Upload certs
+DESC --sandbox=dockerb:kroniak/ssh-client --body=<<EOF
+mkdir -p /cwd/data/certs
+if test -f "/cwd/data/certs/letsencrypt.tar.gz"; then
+  scp -o 'StrictHostKeyChecking no' -P {{$externalSSHPort}} /cwd/data/certs/letsencrypt.tar.gz {{$externalSSHUsername}}@{{$externalSSHHost}}:~
+  ssh -o 'StrictHostKeyChecking no' -p {{$externalSSHPort}}  {{$externalSSHUsername}}@{{$externalSSHHost}} bash <<SSHEOF
+    set -e
+    tar zxvf ~/letsencrypt.tar.gz -C / > /dev/null
+SSHEOF
+fi
+EOF
+
+pip:run --name=certonly --wait=install,externalupload --description=<<DESC
+Certificate domains
+DESC --sandbox=sshb:{{$externalSSHUsername}}@{{$externalSSHHost}}:{{$externalSSHPort}} --body=<<EOF
+
+systemctl stop nginx||:
+
+CERT_SERVER="https://acme-v02.api.letsencrypt.org/directory"
+certbot certonly -n --standalone --agree-tos --preferred-challenges http \
+  --email "${SECRET_CERTS_EMAIL}" --cert-name "{{$externalSSHHost}}" \
+  -d "{{$externalSSHHost}}" \
+  --server "${CERT_SERVER}"
+
+{{template "appowncloud" $ctx}}
+{{template "appregistry" $ctx}}
+
+systemctl start nginx||:
+
+EOF
+
+pip:run --name=download --wait=certonly --description=<<DESC
+Download certs
+DESC --sandbox=dockerb:kroniak/ssh-client --body=<<DOWNLOADEOF
+mkdir -p /cwd/data/certs
+ssh -o 'StrictHostKeyChecking no' -p {{$externalSSHPort}} {{$externalSSHUsername}}@{{$externalSSHHost}} bash <<SSHEOF
+  set -e
+  tar zcvfP ~/letsencrypt.tar.gz /etc/letsencrypt > /dev/null
+SSHEOF
+scp -o 'StrictHostKeyChecking no' -P {{$externalSSHPort}} {{$externalSSHUsername}}@{{$externalSSHHost}}:~/letsencrypt.tar.gz /cwd/data/certs/letsencrypt.tar.gz
+if [ ! -f "/cwd/data/certs/letsencrypt.tar.gz" ]; then
+  echo "expected /cwd/data/certs/letsencrypt.tar.gz file" >&2
+  exit 456
+fi
+DOWNLOADEOF
+
+pip:run --name=internalupload --wait=download --description=<<DESC
+Upload certs to internal servers
+DESC --sandbox=dockerb:kroniak/ssh-client --body=<<EOF
+mkdir -p /etc/letsencrypt
+scp -o 'StrictHostKeyChecking no' -P {{$internalSSHPort}} -r /cwd/data/certs/letsencrypt.tar.gz {{$internalSSHUsername}}@{{$internalSSHHost}}:~/letsencrypt.tar.gz 
+ssh -o 'StrictHostKeyChecking no' -p {{$internalSSHPort}}  {{$internalSSHUsername}}@{{$internalSSHHost}} bash <<SSHEOF
+  set -e
+  tar zxvf ~/letsencrypt.tar.gz -C / > /dev/null
+SSHEOF
+EOF

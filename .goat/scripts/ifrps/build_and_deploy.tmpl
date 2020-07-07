@@ -1,0 +1,85 @@
+{{- define "build_and_deploy" -}}
+{{- $ctx := . -}}
+
+{{- $secrets := $ctx.Properties.Secrets.Tree -}}
+{{- $data := $ctx.Data.Tree -}}
+
+{{- $internalUsername := $secrets.infrastructure.internal.master.username }}
+{{- $internalHost := $secrets.infrastructure.internal.master.host }}
+{{- $internalPort := $secrets.infrastructure.internal.master.port }}
+
+{{- $externalSSHUsername := $secrets.infrastructure.external.master.username }}
+{{- $externalSSHHost := $secrets.infrastructure.external.master.host }}
+{{- $externalSSHPort := $secrets.infrastructure.external.master.port }}
+
+{{- $frpPort := $secrets.infrastructure.proxy.frp.port }}
+{{- $frpSecret := $secrets.infrastructure.proxy.frp.secret }}
+
+
+pip:run --name=build --description=<<DESC
+Build frp server ( http://github.com/fatedier/frp )
+DESC --sandbox=dockerb:golang --body=<<EOF
+
+if [ ! -f "/cwd/tmp/frps" ]; then
+    echo "Build frps"
+    go get -u github.com/fatedier/frp/cmd/frps
+    chmod 0555 ${GOPATH}/bin/frps
+    mkdir -p /cwd/tmp
+    mv ${GOPATH}/bin/frps /cwd/tmp/frps 
+fi
+
+EOF
+
+{{/* golang image contains scp command - since more images are not required */}}
+pip:run --name=deploy --wait=build --description=<<DESC
+Deploy frps to proxy node
+DESC --sandbox=dockerb:golang --body=<<EOF
+
+scp -o 'StrictHostKeyChecking no' -P {{$externalSSHPort}} /cwd/tmp/frps {{$externalSSHUsername}}@{{$externalSSHHost}}:/usr/local/bin/
+
+EOF
+
+pip:run --name=initservice --wait=deploy --description=<<DESC
+Prepare and run frps systemd service
+DESC --sandbox=sshb:{{$externalSSHUsername}}@{{$externalSSHHost}}:{{$externalSSHPort}} --body=<<EOF
+
+groupadd frp ||:
+useradd -G frp -m frps ||:
+
+mkdir -p /etc/frp
+chmod 0770 /etc/frp
+chown {{$externalSSHUsername}}:frp /etc/frp
+
+cat >/etc/frp/frps.ini <<CONFIGEOF
+{{ template "config" $ctx }}
+CONFIGEOF
+
+chmod 0600 /etc/frp/frps.ini
+chown frps:frp /etc/frp/frps.ini
+
+cat >/etc/systemd/system/frps.service <<SERVICEEOF
+[Unit]
+Description=FRP Server Service
+After=network.target
+
+[Service]
+Type=simple
+User=frps
+Restart=on-failure
+RestartSec=5s
+ExecStart=/bin/bash -c "/usr/local/bin/frps -c /etc/frp/frps.ini"
+
+[Install]
+WantedBy=multi-user.target
+SERVICEEOF
+
+chmod 0644 /etc/systemd/system/frps.service
+
+systemctl restart frps
+systemctl enable frps
+
+
+EOF
+
+
+{{- end -}}

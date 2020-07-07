@@ -1,0 +1,34 @@
+{{- define "update_config" -}}
+{{- $ctx := . -}}
+
+{{- $secrets := $ctx.Properties.Secrets.Tree -}}
+{{- $data := $ctx.Data.Tree -}}
+
+{{- $internalUsername := $secrets.infrastructure.internal.master.username }}
+{{- $internalHost := $secrets.infrastructure.internal.master.host }}
+{{- $internalPort := $secrets.infrastructure.internal.master.port }}
+
+{{- $externalSSHUsername := $secrets.infrastructure.external.master.username }}
+{{- $externalSSHHost := $secrets.infrastructure.external.master.host }}
+{{- $externalSSHPort := $secrets.infrastructure.external.master.port }}
+
+{{- $frpPort := $secrets.infrastructure.proxy.frp.port }}
+{{- $frpSecret := $secrets.infrastructure.proxy.frp.secret }}
+
+
+pip:run --name=updateconfig --description=<<DESC
+Update frps config and restart frps service
+DESC --sandbox=sshb:{{$externalSSHUsername}}@{{$externalSSHHost}}:{{$externalSSHPort}} --body=<<UPDATEBODYEOF
+
+cat >/etc/frp/frps.ini <<CONFIGEOF
+{{ template "config" $ctx }}
+CONFIGEOF
+
+chmod 0600 /etc/frp/frps.ini
+chown frps:frp /etc/frp/frps.ini
+
+systemctl restart frps
+
+UPDATEBODYEOF
+
+{{- end -}}

@@ -1,5 +1,5 @@
 {{- $externalHost := (index $ctx.Properties.Secrets "infrastructure.external.master.host") -}}
-{{- $owncloudPort := (index $ctx.Properties.Secrets "buildin.owncloud.port") -}}
+{{- $owncloudPort := (index $ctx.Properties.Secrets "standalone.owncloud.port") -}}
 
 version: '3.7'
 
@@ -13,8 +13,8 @@ services:
     volumes:
       - "${CERTS_PATH}:/certs"
     environment:
-        - "PROXY_BuildinOwnCloud_FROM=owncloud.{{$externalHost}}"
-        - "PROXY_BuildinOwnCloud_CERT=owncloud.{{$externalHost}}"
-        - "PROXY_BuildinOwnCloud_TO={{$externalHost}}"
-        - "PROXY_BuildinOwnCloud_PORT={{$owncloudPort}}"
-        - "PROXY_BuildinOwnCloud_PROTOCOL=HTTP"
+        - "PROXY_StandaloneOwnCloud_FROM=owncloud.{{$externalHost}}"
+        - "PROXY_StandaloneOwnCloud_CERT=owncloud.{{$externalHost}}"
+        - "PROXY_StandaloneOwnCloud_TO={{$externalHost}}"
+        - "PROXY_StandaloneOwnCloud_PORT={{$owncloudPort}}"
+        - "PROXY_StandaloneOwnCloud_PROTOCOL=HTTP"

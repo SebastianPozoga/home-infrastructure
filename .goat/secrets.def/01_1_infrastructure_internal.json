@@ -1,19 +1,30 @@
-[{
-  "prompt":"(infrastructure) Insert internal master host",
-  "key":"infrastructure.internal.master.host",
-  "type":"line",
-  "min":0,
-  "max":1024
-}, {
-  "prompt":"(infrastructure) Insert internal master port",
-  "key":"infrastructure.internal.master.port",
-  "type":"line",
-  "min":0,
-  "max":1024
-}, {
-  "prompt":"(infrastructure) Insert internal master username",
-  "key":"infrastructure.internal.master.username",
-  "type":"line",
-  "min":0,
-  "max":1024
-}]
+[
+  {
+    "prompt": "(infrastructure) Insert internal master host",
+    "key": "infrastructure.internal.master.host",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  },
+  {
+    "prompt": "(infrastructure) Insert internal master port",
+    "key": "infrastructure.internal.master.port",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  },
+  {
+    "prompt": "(infrastructure) Insert internal master username",
+    "key": "infrastructure.internal.master.username",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  },
+  {
+    "prompt": "(infrastructure) Insert internal data path",
+    "key": "infrastructure.internal.data.path",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "prompt": "Insert port for docker registry",
+    "key": "standalone.registry.port",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  },
+  {
+    "prompt": "Insert main username for docker registry",
+    "key": "standalone.registry.username",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  },
+  {
+    "prompt": "Insert passowrd for docker registry main user",
+    "key": "standalone.registry.password",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  }
+]

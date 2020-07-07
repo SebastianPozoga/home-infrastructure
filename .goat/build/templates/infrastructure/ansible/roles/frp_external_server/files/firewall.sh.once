@@ -4,8 +4,8 @@ set -e
 firewall-cmd --zone=public --add-port=80/tcp --permanent
 firewall-cmd --zone=public --add-port=443/tcp --permanent
 firewall-cmd --zone=public --add-port={{index $ctx.Properties.Secrets "services.frp.port"}}/tcp --permanent
-firewall-cmd --zone=public --add-port={{index $ctx.Properties.Secrets "buildin.insternalssh.port"}}/tcp --permanent
-firewall-cmd --zone=public --add-port={{index $ctx.Properties.Secrets "buildin.registry.port"}}/tcp --permanent
-firewall-cmd --zone=public --add-port={{index $ctx.Properties.Secrets "buildin.owncloud.port"}}/tcp --permanent
+firewall-cmd --zone=public --add-port={{index $ctx.Properties.Secrets "standalone.internalssh.port"}}/tcp --permanent
+firewall-cmd --zone=public --add-port={{index $ctx.Properties.Secrets "standalone.registry.port"}}/tcp --permanent
+firewall-cmd --zone=public --add-port={{index $ctx.Properties.Secrets "standalone.owncloud.port"}}/tcp --permanent
 
 firewall-cmd --reload

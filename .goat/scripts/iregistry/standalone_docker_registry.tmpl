@@ -1,0 +1,60 @@
+{{- define "standalone_docker_registry" -}}
+{{- $ctx = . -}}
+
+{{- $internalUsername := (index $ctx.Properties.Secrets "infrastructure.internal.master.username") }}
+{{- $internalHost := (index $ctx.Properties.Secrets "infrastructure.internal.master.host") }}
+{{- $internalPort := (index $ctx.Properties.Secrets "infrastructure.internal.master.port") }}
+
+{{- $registryPort := (index $ctx.Properties.Secrets "standalone.registry.port") }}
+{{- $registryUsername := (index $ctx.Properties.Secrets "standalone.registry.username") }}
+{{- $registryPassword := (index $ctx.Properties.Secrets "standalone.registry.password") }}
+
+{{/*
+    Create docker registry
+*/}}
+
+pip:run --name=dockerreg --wait=dockeri --description=<<DESC
+Create internal docker registry
+DESC --sandbox=sshb:{{$internalUsername}}@{{$internalHost}}:{{$internalPort}} --body=<<EOF
+
+
+cat > outfile.txt <<COMPOSEEOF
+registry:
+  restart: always
+  image: registry:2
+  ports:
+    - ${SECRET_STANDALONE_REGISTRY_PORT}:${SECRET_STANDALONE_REGISTRY_PORT}
+  environment:
+    REGISTRY_HTTP_TLS_CERTIFICATE: /certs/domain.crt
+    REGISTRY_HTTP_TLS_KEY: /certs/domain.key
+    REGISTRY_AUTH: htpasswd
+    REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+    REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+    REGISTRY_HTTP_ADDR: {{index .Properties.Secrets "registry.host"}}:{{index .Properties.Secrets "registry.port"}}
+    REGISTRY_HTTP_TLS_CERTIFICATE: /cert/domain.crt \
+    REGISTRY_HTTP_TLS_KEY: /cert/domain.key
+  volumes:
+    - /path/data:/var/lib/registry
+    - /path/certs:/certs
+    - /path/auth:/auth
+COMPOSEEOF
+docker-compose -f /dev/stdin -p registry up
+rm outfile.txt
+
+docker run \
+  --entrypoint htpasswd \
+  registry:2 -Bbn ${SECRET_STANDALONE_REGISTRY_USERNAME} ${SECRET_STANDALONE_REGISTRY_PASSWORD} > auth/htpasswd
+
+EOF
+
+docker run -d -p {{index .Properties.Secrets "registry.port"}}:{{index .Properties.Secrets "registry.port"}} \
+    --restart=always --name registry \
+    -v /etc/letsencrypt/live/{{index .Properties.Secrets "registry.host"}}:/certs \
+    -v /mnt/registry:/var/lib/registry \
+    -v `pwd`/auth:/auth \
+    -e REGISTRY_HTTP_ADDR={{index .Properties.Secrets "registry.host"}}:{{index .Properties.Secrets "registry.port"}} \
+    -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
+    -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
+    registry:2
+
+{{- end -}}

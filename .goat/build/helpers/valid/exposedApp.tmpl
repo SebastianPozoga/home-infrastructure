@@ -1,0 +1,14 @@
+{{- define "valid/exposedApp" }}
+
+{{- $row := .row -}}
+{{- $name := .name -}}
+
+{{- if $row.port }}{{else}}
+{{- error (print "port is required for exposed app " $name) }}
+{{- end }}
+
+{{- if $row.host }}{{else}}
+{{- error (print "port is required for exposed app " $name) }}
+{{- end }}
+
+{{- end -}}

@@ -1,0 +1,16 @@
+[
+  {
+    "prompt": "(FRP) Insert frp port",
+    "key": "infrastructure.proxy.frp.port",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  },
+  {
+    "prompt": "(FRP) Insert frp secret",
+    "key": "infrastructure.proxy.frp.secret",
+    "type": "line",
+    "min": 0,
+    "max": 1024
+  }
+]

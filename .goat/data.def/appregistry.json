@@ -1,0 +1,28 @@
+[
+  {
+    "type": "appregistry",
+    "properties": [
+      {
+        "prompt": "Insert application host",
+        "key": "host",
+        "type": "line",
+        "min": 1,
+        "max": 1024
+      },
+      {
+        "prompt": "Insert port",
+        "key": "port",
+        "type": "line",
+        "min": 1,
+        "max": 1024
+      },
+      {
+        "prompt": "HTTP secret",
+        "key": "http_secret",
+        "type": "line",
+        "min": 1,
+        "max": 1024
+      }
+    ]
+  }
+]

@@ -1,0 +1,48 @@
+{{- $ctx := . -}}
+
+{{- $secrets := $ctx.Properties.Secrets.Tree -}}
+{{- $data := $ctx.Data.Tree -}}
+
+{{- $internalUsername := $secrets.infrastructure.internal.master.username }}
+{{- $internalHost := $secrets.infrastructure.internal.master.host }}
+{{- $internalPort := $secrets.infrastructure.internal.master.port }}
+
+{{- $externalSSHUsername := $secrets.infrastructure.external.master.username }}
+{{- $externalSSHHost := $secrets.infrastructure.external.master.host }}
+{{- $externalSSHPort := $secrets.infrastructure.external.master.port }}
+
+pip:run --name=cert --description=<<DESC
+Prepare certs
+DESC --body=<<EOF
+scripts:run certs
+EOF
+
+pip:run --name=frps --description=<<DESC
+Install frp server. frp is a fast reverse proxy to help you expose a local server behind a NAT or firewall to the Internet
+DESC --sandbox=self --body=<<BODYEOF
+scripts:run ifrps
+BODYEOF
+
+pip:run --name=frpc --description=<<DESC
+Install frp client. frp is a fast reverse proxy to help you expose a local server behind a NAT or firewall to the Internet
+DESC --sandbox=self --body=<<BODYEOF
+scripts:run ifrpc
+BODYEOF
+
+pip:run --name=iproxy --wait=cert --description=<<DESC
+Install nginx proxy
+DESC --sandbox=self --body=<<BODYEOF
+scripts:run iproxy
+BODYEOF
+
+pip:run --name=docker --description=<<DESC
+Install docker and docker composer
+DESC --sandbox=sshb:{{$internalUsername}}@{{$internalHost}}:{{$internalPort}} --body=<<EOF
+{{template "/docker/install.def" $ctx}}
+EOF
+
+pip:run --name=iapps --wait=docker --description=<<DESC
+Install applications
+DESC --sandbox=self --body=<<BODYEOF
+scripts:run iapps
+BODYEOF

@@ -1,0 +1,69 @@
+{{- define "appregistry"}}
+{{- $ctx := . -}}
+
+{{- $secrets := $ctx.Properties.Secrets.Tree -}}
+{{- $data := $ctx.Data.Tree -}}
+
+
+{{- $externalSSHUsername := $secrets.infrastructure.external.master.username }}
+{{- $externalSSHHost := $secrets.infrastructure.external.master.host }}
+{{- $externalSSHPort := $secrets.infrastructure.external.master.port }}
+{{- $externalDataPath := $secrets.infrastructure.external.data.path }}
+
+{{- $internalSSHUsername := $secrets.infrastructure.internal.master.username }}
+{{- $internalSSHHost := $secrets.infrastructure.internal.master.host }}
+{{- $internalSSHPort := $secrets.infrastructure.internal.master.port }}
+{{- $internalDataPath := $secrets.infrastructure.internal.data.path }}
+
+
+{{- range $index, $app := $data.appregistry.__NODES }}
+{{- $logName := (print "appregistry." $index) }}
+{{- template "valid/exposedApp" (dict "name" $logName "row" $app) }}
+
+{{- $appInternalDataPath := (print $internalDataPath "/app/registry/" $index "/" ) }}
+{{- $appExternalDataPath := (print $externalDataPath "/app/registry/" $index "/" ) }}
+
+pip:run --name=appregistry{{$index}} --description=<<DESC
+Update {{$index}} docker registry users
+DESC --body=<<APPEOF
+
+pip:run --name=htpasswd --description=<<DESC
+Prepare {{$index}} docker registry htpasswd users definition
+DESC --sandbox=docker:xmartlabs/htpasswd --body=<<HTPASSWDEOF
+
+mkdir -p /cwd/tmp/appregistry/{{$index}}/auth
+cd /cwd/tmp/appregistry/{{$index}}/auth
+>htpasswd
+{{- range $index, $user := $data.user.__NODES }}
+htpasswd -Bbn {{$user.name}} {{sh_secret (print $user.__PATH ".password")}} >> htpasswd
+{{- end}}
+
+HTPASSWDEOF
+
+
+pip:run --name=uinternal --wait=htpasswd --description=<<DESC
+Upload htpasswd to internal servers
+DESC --sandbox=dockerb:kroniak/ssh-client --body=<<IUPLOADEOF
+ssh -o 'StrictHostKeyChecking no' -p {{$internalSSHPort}}  {{$internalSSHUsername}}@{{$internalSSHHost}} bash <<SSHEOF
+  set -e
+  mkdir -p {{$appInternalDataPath}}/auth
+SSHEOF
+scp -o 'StrictHostKeyChecking no' -P {{$internalSSHPort}} -r /cwd/tmp/appregistry/{{$index}}/auth {{$internalSSHUsername}}@{{$internalSSHHost}}:{{$appInternalDataPath}}
+IUPLOADEOF
+
+pip:run --name=uexternal --wait=htpasswd --description=<<DESC
+Upload htpasswd to external servers
+DESC --sandbox=dockerb:kroniak/ssh-client --body=<<EUPLOADEOF
+ssh -o 'StrictHostKeyChecking no' -p {{$externalSSHPort}}  {{$externalSSHUsername}}@{{$externalSSHHost}} bash <<SSHEOF
+  set -e
+  mkdir -p {{$appExternalDataPath}}/auth
+SSHEOF
+scp -o 'StrictHostKeyChecking no' -P {{$externalSSHPort}} -r /cwd/tmp/appregistry/{{$index}}/auth {{$externalSSHUsername}}@{{$externalSSHHost}}:{{$appExternalDataPath}}
+EUPLOADEOF
+
+APPEOF
+
+{{- end }}
+
+
+{{- end}}

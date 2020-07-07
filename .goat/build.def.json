@@ -1,4 +1,5 @@
-[{
-  "template":"infrastructure",
-  "afterBuild": "bash ./.goat/common/afterBuild/main.sh"
-}]
+[
+  {
+    "template": "infrastructure"
+  }
+]

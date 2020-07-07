@@ -4,6 +4,6 @@ internal_master_host ansible_connection=ssh ansible_user={{index $ctx.Properties
 [internal_slaves]
 
 [external_master]
-external_master_host ansible_connection=ssh ansible_user={{index $ctx.Properties.Secrets "infrastructure.external.master.username"}} ansible_host={{index $ctx.Properties.Secrets "infrastructure.external.master.host"}} ansible_port={{index $ctx.Properties.Secrets "infrastructure.external.master.port"}}
+# external_master_host ansible_connection=ssh ansible_user={{index $ctx.Properties.Secrets "infrastructure.external.master.username"}} ansible_host={{index $ctx.Properties.Secrets "infrastructure.external.master.host"}} ansible_port={{index $ctx.Properties.Secrets "infrastructure.external.master.port"}}
 
 [external_slaves]

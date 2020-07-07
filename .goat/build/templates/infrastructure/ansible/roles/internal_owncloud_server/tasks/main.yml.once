@@ -2,4 +2,4 @@
 #
 # Tasks to install owncloud server
 #
-{{template "/ansible_docker_compose.def" (dict "taskName" "Owncloud deploy" "tmpName" "buildin_owncloud_server" "image" "owncloud")}}
+{{template "/ansible/docker_compose.def" (dict "taskName" "Owncloud deploy" "tmpName" "standalone_owncloud_server" "image" "owncloud")}}

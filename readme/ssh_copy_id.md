@@ -22,3 +22,15 @@ cat ~/.ssh/id_rsa.pub | ssh -p 2223 root@pozoga.eu 'mkdir ~/.ssh && chmod 0700 ~
 ```
 ssh-copy-id -p $SSH_PORT $SSH_USERNAME@$SSH_HOST
 ```
+
+## How to allow root login via ssh 
+```
+# go to root terminal
+sudo su
+# set root password
+passwd
+#update ssh config
+sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+service ssh restart
+# done ;-)
+```

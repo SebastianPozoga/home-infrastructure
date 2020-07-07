@@ -1,0 +1,14 @@
+{{- define "valid/rootAuthApp" }}
+
+{{- $row := .row -}}
+{{- $name := .name -}}
+
+{{- if $row.admin.username }}{{else}}
+{{- error (print "admin username is required for " $name " and take " $row.admin.username) }}
+{{- end }}
+
+{{- if $row.admin.password }}{{else}}
+{{- error (print "admin password is required for " $name " and take " $row.admin.password) }}
+{{- end }}
+
+{{- end -}}

@@ -1,7 +1,0 @@
-[{
-  "prompt":"(GOlang) Version (like '1.13.3')",
-  "key":"os.component.go.version",
-  "type":"line",
-  "min":1,
-  "max":50
-}]

@@ -1,0 +1,31 @@
+{{- $ctx := . -}}
+
+{{- $secrets := $ctx.Properties.Secrets.Tree -}}
+{{- $data := $ctx.Data.Tree -}}
+
+{{- $internalUsername := $secrets.infrastructure.internal.master.username }}
+{{- $internalHost := $secrets.infrastructure.internal.master.host }}
+{{- $internalPort := $secrets.infrastructure.internal.master.port }}
+
+{{- $externalSSHUsername := $secrets.infrastructure.external.master.username }}
+{{- $externalSSHHost := $secrets.infrastructure.external.master.host }}
+{{- $externalSSHPort := $secrets.infrastructure.external.master.port }}
+
+{{- $frpPort := $secrets.infrastructure.proxy.frp.port }}
+{{- $frpSecret := $secrets.infrastructure.proxy.frp.secret }}
+
+pip:try --name=frpc --description=<<DESC
+Build and deploy FRP client or update frpc config
+DESC --sandbox=self --body=<<BODYEOF
+
+pip:run --name=check --description=<<DESC
+Check if frp client is installed and runned on internal host
+DESC --sandbox=sshb:{{$internalUsername}}@{{$internalHost}}:{{$internalPort}} --body=<<CHECKEREOF
+systemctl is-active frpc
+CHECKEREOF 
+
+BODYEOF success=<<SUCCESSBODYEOF
+{{template "update_config" $ctx}}
+SUCCESSBODYEOF fail=<<FAILBODYEOF
+{{template "build_and_deploy" $ctx}}
+FAILBODYEOF

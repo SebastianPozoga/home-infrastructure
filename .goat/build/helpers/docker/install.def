@@ -1,0 +1,48 @@
+{{- $ctx := . -}}
+{{- $properties := $ctx.Properties.Project.Tree -}}
+
+{{- $dcVersion := $properties.dockercompose.version -}}
+
+DOCKER_COMPOSE_VERSION={{$dcVersion}}
+
+echo "Install docker"
+if [ -x "$(command -v docker)" ]; then
+  echo "Install docker... skipped"
+else
+  echo "Install docker"
+  if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null ; then
+      echo "Install docker... Windows 10 Bash is not supported (Docker install)"
+      cat /proc/version
+      exit 101
+  else if grep -qEi "Ubuntu" /proc/version &> /dev/null ; then
+      echo "Install docker... Install docekr for Ubuntu"
+      apt-get remove -y docker docker-engine docker.io containerd runc
+      apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+      apt-key fingerprint 0EBFCD88
+      add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+      apt-get install -y docker-ce docker-ce-cli containerd.io
+  else if grep -qEi "Red Hat" /proc/version &> /dev/null ; then
+      echo "Install docekr for CentOS (Red Hat) linux"
+      dnf install -y yum-utils device-mapper-persistent-data lvm2
+      dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.rep
+      dnf -y  install docker-ce --nobest
+      systemctl start docker
+      systemctl enable docker
+  else
+      echo "Install docker... Unsupported linux version (Docker isntall)"
+      cat /proc/version
+      exit 102
+  fi
+  fi
+  fi
+fi
+
+if [ -x "$(command -v docker-compose)" ]; then
+  echo "Install docker-compose command... skipped"
+else
+  echo "Install docker-compose command"
+  curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  chmod +x /usr/local/bin/docker-compose
+  echo "Install docker-compose command... success"
+fi

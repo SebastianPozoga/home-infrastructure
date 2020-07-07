@@ -1,0 +1,59 @@
+{{- define "appregistry"}}
+{{- $ctx := . -}}
+
+{{- $secrets := $ctx.Properties.Secrets.Tree -}}
+{{- $data := $ctx.Data.Tree -}}
+
+{{- $internalSSHUsername := $secrets.infrastructure.internal.master.username }}
+{{- $internalSSHHost := $secrets.infrastructure.internal.master.host }}
+{{- $internalSSHPort := $secrets.infrastructure.internal.master.port }}
+{{- $internalDataPath := $secrets.infrastructure.internal.data.path }}
+
+{{- range $index, $app := $data.appregistry.__NODES }}
+{{- $logName := (print "appregistry." $index) }}
+{{- template "valid/exposedApp" (dict "name" $logName "row" $app) }}
+
+{{- $appDataPath := (print $internalDataPath "/app/registry/" $index "/" ) }}
+
+pip:run --name=registry{{$index}} --description=<<DESC
+Install {{$index}} docker registry (on internal host)
+DESC --sandbox=sshb:{{$internalSSHUsername}}@{{$internalSSHHost}}:{{$internalSSHPort}} --body=<<APPEOF
+
+if [ ! -d "/etc/letsencrypt/live/{{$app.host}}" ]; then
+  echo "Expected /etc/letsencrypt/live/{{$app.host}} certificate directory" >&2
+  exit 453
+fi
+
+mkdir -p {{$appDataPath}}/auth
+
+docker-compose -f /dev/stdin -p "registry-{{$index}}" up -d < <(cat <<COMPOSEEOF
+registry:
+  restart: always
+  image: registry:2
+  ports:
+    - {{$app.port}}:5000
+  environment:
+    #REGISTRY_HTTP_SECRET: {{$app.http_secret}}
+    REGISTRY_HTTP_TLS_CERTIFICATE: /cert/domain.crt
+    REGISTRY_HTTP_TLS_KEY: /cert/domain.key
+    REGISTRY_AUTH: htpasswd
+    REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+    REGISTRY_AUTH_HTPASSWD_REALM: {{$app.host}} docker registry
+    REGISTRY_HTTP_ADDR: 0.0.0.0:5000
+  volumes:
+    - {{$appDataPath}}/data:/var/lib/registry
+    - {{$appDataPath}}/auth:/auth
+    - /etc/letsencrypt/live/{{$app.host}}:/cert
+COMPOSEEOF
+)
+
+cd {{$appDataPath}}/auth
+>htpasswd
+{{- range $index, $user := $data.user.__NODES }}
+docker run --rm xmartlabs/htpasswd {{$user.name}} {{sh_secret (print $user.__PATH ".password")}} >> {{$appDataPath}}/auth/htpasswd
+{{- end}}
+
+APPEOF
+
+{{- end}}
+{{- end}}

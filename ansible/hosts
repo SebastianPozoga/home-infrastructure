@@ -1,0 +1,9 @@
+[internal_master]
+internal_master_host ansible_connection=ssh ansible_user=root ansible_host=192.168.1.142 ansible_port=22
+
+[internal_slaves]
+
+[external_master]
+# external_master_host ansible_connection=ssh ansible_user= ansible_host= ansible_port=
+
+[external_slaves]
